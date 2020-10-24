@@ -97,15 +97,6 @@ Parameter ::=
         }
 
 
-QualifiedParameter ::=
-    [APPLICATION 9] IMPLICIT
-        SEQUENCE {
-            path     [0] RELATIVE-OID,
-            contents [1] ParameterContents OPTIONAL,
-            children [2] ElementCollection OPTIONAL
-        }
-
-
 ParameterContents ::=
     SET {
         identifier        [ 0] EmberString             OPTIONAL,
@@ -267,15 +258,6 @@ Node ::=
         }
 
 
-QualifiedNode ::=
-    [APPLICATION 10] IMPLICIT
-        SEQUENCE {
-            path     [0] RELATIVE-OID,
-            contents [1] NodeContents      OPTIONAL,
-            children [2] ElementCollection OPTIONAL
-        }
-
-
 NodeContents ::=
     SET {
         identifier        [0] EmberString OPTIONAL,
@@ -316,7 +298,6 @@ MatrixContents ::=
         maximumConnectsPerTarget [ 7] Integer32            OPTIONAL, -- nToN: max number of sources connected to one target
         parametersLocation       [ 8] ParametersLocation   OPTIONAL,
         gainParameterNumber      [ 9] Integer32            OPTIONAL, -- nToN: number of connection gain parameter
-        labels                   [10] LabelCollection      OPTIONAL,
         schemaIdentifiers        [11] EmberString          OPTIONAL
     }
 
@@ -343,21 +324,8 @@ MatrixAddressingMode ::=
 
 ParametersLocation ::=
     CHOICE {
-        basePath RELATIVE-OID, -- absolute path to node containing parameters for targets, sources and connections
         inline   Integer32     -- subidentifier to node containing parameters for targets, sources and connections
     }
-
-
-LabelCollection ::=
-    SEQUENCE OF [0] Label
-
-
-Label ::=
-    [APPLICATION 18] IMPLICIT
-        SEQUENCE {
-            basePath    [0] RELATIVE-OID,
-            description [1] EmberString
-        }
 
 
 TargetCollection ::=
@@ -392,7 +360,6 @@ Connection ::=
     [APPLICATION 16] IMPLICIT
         SEQUENCE {
             target         [0] Integer32,
-            sources        [1] PackedNumbers         OPTIONAL, -- not present or empty array means "none"
             operation      [2] ConnectionOperation   OPTIONAL,
             disposition    [3] ConnectionDisposition OPTIONAL
         }
@@ -405,10 +372,6 @@ Connection ::=
 
 -- Use case 3: TakeResponse (Provider to consumer)
 -- Connection: { target:1, sources:[4], operation:absolute, disposition:modified|pending|locked|... }
-
-
-PackedNumbers ::=
-    RELATIVE-OID
 
 
 ConnectionOperation ::=
@@ -429,18 +392,6 @@ ConnectionDisposition ::=
     }
 
 
-QualifiedMatrix ::=
-    [APPLICATION 17] IMPLICIT
-        SEQUENCE {
-            path           [0] RELATIVE-OID,
-            contents       [1] MatrixContents       OPTIONAL,
-            children       [2] ElementCollection    OPTIONAL,
-            targets        [3] TargetCollection     OPTIONAL,
-            sources        [4] SourceCollection     OPTIONAL,
-            connections    [5] ConnectionCollection OPTIONAL
-        }
-
-
 -- ======================================================
 --
 -- Function
@@ -451,15 +402,6 @@ Function ::=
     [APPLICATION 19] IMPLICIT
         SEQUENCE {
             number      [0] Integer32,
-            contents    [1] FunctionContents    OPTIONAL,
-            children    [2] ElementCollection   OPTIONAL
-        }
-
-
-QualifiedFunction ::=
-    [APPLICATION 20] IMPLICIT
-        SEQUENCE {
-            path        [0] RELATIVE-OID,
             contents    [1] FunctionContents    OPTIONAL,
             children    [2] ElementCollection   OPTIONAL
         }
@@ -568,13 +510,7 @@ RootElementCollection ::=
 
 
 RootElement ::=
-    CHOICE {
-        element            Element,
-        qualifiedParameter QualifiedParameter,
-        qualifiedNode      QualifiedNode,
-        qualifiedMatrix    QualifiedMatrix,
-        qualifiedFunction  QualifiedFunction
-    }
+    Element
 
 
 END
