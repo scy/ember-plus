@@ -510,7 +510,9 @@ RootElementCollection ::=
 
 
 RootElement ::=
-    Element
+    CHOICE {
+        element Element
+    }
 
 
 END
